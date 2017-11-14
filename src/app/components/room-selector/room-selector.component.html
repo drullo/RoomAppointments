@@ -1,0 +1,115 @@
+<div id="parent">
+  <div>
+    <form id="navbar" #f="ngForm">
+      <md-select placeholder="Conference Room" [(ngModel)]="selectedRoom" name="confRoom" required (change)="getAppointments(f.value)">
+        <md-option *ngFor="let room of rooms" [value]="room.sAMAccountName">{{ room.displayName }}</md-option>
+      </md-select>
+
+      <md-form-field>
+        <input mdInput type="password" placeholder="Password" [(ngModel)]="password" name="password">
+      </md-form-field>
+
+      <md-form-field>
+        <input mdInput [mdDatepicker]="picker" placeholder="Choose Date" [(ngModel)]="startDate" name="startDate" required (click)="picker.open()"
+          (dateChange)="getAppointments(f.value)">
+        <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
+        <md-datepicker #picker></md-datepicker>
+      </md-form-field>
+
+      <md-checkbox [(ngModel)]="includeEndedAppointments" name="includeEndedAppointments" (change)="getAppointments(f.value)">Include meetings in the past</md-checkbox>
+
+      <button md-button md-raised-button color="primary" (click)="getAppointments(f.value)">Show Appointments</button>
+    </form>
+  </div>
+
+  <div>
+    <div *ngFor="let appointment of selectedRoomAppointments | async" class="block appointment" [class.now]="appointment.happeningNow">
+      <div class="heading">
+        <h2>
+          <span *ngIf="!appointment.isToday">{{ appointment.start | date:"fullDate" }}</span> {{ appointment.start | date:"shortTime"
+          }} - {{ appointment.end | date:"shortTime" }}
+        </h2>
+
+        <h3 class="subject">{{ appointment?.subject }}</h3>
+      </div>
+
+      <div class="attendeeList" *ngIf="appointment.requiredAttendeesList.length > 0">
+        <div>Required Attendees</div>
+
+        <div class="attendees">
+          <a *ngFor="let attendee of appointment.requiredAttendeesList" [href]="'mailto:' + attendee.address">{{ attendee.name }}</a>
+        </div>
+      </div>
+
+      <div class="attendeeList" *ngIf="appointment.optionalAttendeesList.length > 0">
+        <div>Optional Attendees</div>
+
+        <div class="attendees">
+          <a *ngFor="let attendee of appointment.optionalAttendeesList" [href]="'mailto:' + attendee.address">{{ attendee.name }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="noAppointmentsWrapper">
+      <div *ngIf="lastCheckTime && (selectedRoomAppointments | async)?.length == 0" class="block noAppointments">
+        <div>Room Available</div>
+        <div>
+          No appointments are scheduled in this room during the selected time
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="timeInfo">
+    <div id="currentTime" *ngIf="currentTime">
+      <span>Current Time:</span> {{ currentTime | date:'mediumTime' }}
+    </div>
+
+    <div id="timestamp" *ngIf="lastCheckTime">
+      Last Checked: {{ lastCheckTime | date:"short" }}
+    </div>
+  </div>
+</div>
+
+<!--<nav class="navbar navbar-toggleabl-md navbar-inverse bg-inverse mb-5">
+  <div class="clearfix">
+    <p-dropdown class="mr-4" *ngIf="rooms.length > 0" [options]="rooms" [(ngModel)]="selectedRoom" (onChange)="roomSelected()"></p-dropdown>
+    <input class="mr-4" type="password" pPassword [(ngModel)]="password" placeholder="Enter Password" [feedback]="false" />
+    <p-calendar class="mr-4" [(ngModel)]="startDate" [showIcon]="true" (onSelect)="setLocalDate($event)"></p-calendar>
+    <p-checkbox class="ml-4 white" [(ngModel)]="includeEndedAppointments" binary="true" label="Include Ended Meetings"></p-checkbox>
+    <button class="ml-4" pButton type="button" (click)="getAppointments()" label="Show Appointments"></button>
+
+    <div *ngIf="lastCheckTime" class="float-right white">
+      Last Checked: {{ lastCheckTime | date:"short" }}
+    </div>
+  </div>
+</nav>-->
+
+<!-- <div *ngFor="let appointment of selectedRoomAppointments | async" class="alert m-5" [class.alert-danger]="appointment.happeningNow"
+  [class.alert-info]="!appointment.happeningNow">
+
+  <h2>
+    <span *ngIf="!appointment.isToday">{{ appointment.start | date:"fullDate" }}</span> {{ appointment.start | date:"shortTime"
+    }} - {{ appointment.end | date:"shortTime" }}
+  </h2>
+
+  <h3 class="font-italic">{{ appointment?.subject }}</h3>
+
+  <div class="small pt-3" *ngIf="appointment.requiredAttendeesList.length > 0">
+    <div class="font-weight-bold">Required Attendees:</div>
+
+    <span *ngFor="let attendee of appointment.requiredAttendeesList" class="pr-4">
+        <a [href]="'mailto:' + attendee.address">{{ attendee.name }}</a>
+      </span>
+  </div>
+
+  <div class="small pt-3" *ngIf="appointment.optionalAttendeesList.length > 0">
+    <div class="font-weight-bold">Optional Attendees:</div>
+
+    <span *ngFor="let attendee of appointment.optionalAttendeesList" class="pr-4">
+        <a [href]="'mailto:' + attendee.address">{{ attendee.name }}</a>
+      </span>
+  </div>
+</div>-->
+
+<!-- <div *ngIf="lastCheckTime && (selectedRoomAppointments | async)?.length == 0" class="alert alert-warning m-5">-->
