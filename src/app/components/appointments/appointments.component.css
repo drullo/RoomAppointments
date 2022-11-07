@@ -1,0 +1,211 @@
+#parent {
+  padding: 2em;
+  height: calc(100% - 4em);
+}
+
+.block {
+  border-radius: 5px;
+}
+
+.appointments-wrapper {
+  display: grid;
+  grid-gap: 1em;
+  min-height: 100%;
+}
+
+.appointments-wrapper.more-than-three {
+  grid-template-columns: 1fr 1fr;
+}
+
+.appointment {
+  background-color: #5e6772;
+  color: #fff;
+}
+
+.appointment.one {
+  font-size: 1.5em;
+}
+
+.appointment.two {
+  font-size: 1.3em;
+}
+
+.appointment.three {
+  font-size: 1.1em;
+}
+
+.appointment a {
+  color: #B8B8B8;
+  text-decoration: none;
+}
+
+.appointment a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.appointment.now {
+  background-color: #C03D3D;
+}
+
+.appointment.in-past {
+  opacity: .6;
+}
+
+.appointment .heading {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  background-color: #484e55;
+  padding: 0 1em;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.appointment.now .heading {
+  background-color: #9b1b1b;
+}
+
+.appointment .subject {
+  justify-self: end;
+  font-style: italic;
+}
+
+.name-with-photo {
+  display: grid;
+  grid-template-columns: 1.2em auto;
+  grid-gap: .5em;
+  align-items: center;
+}
+
+.subject .name-with-photo {
+  grid-template-columns: auto 1.2em;
+}
+
+img {
+  border-radius: 100%;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.subject img {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.attendee-info {
+  padding: 1em;
+}
+
+.no-attendees {
+  font-style: italic;
+  font-size: 1.2em;
+}
+
+.no-attendees div {
+  font-size: .9em;
+}
+
+.no-attendees div:nth-child(1) {
+  margin-top: 2em;
+}
+
+.attendee-list {
+  font-size: 1.3em;
+}
+
+.attendee-list.optional {
+  margin-top: 1em;
+}
+
+.attendee-list>div:nth-child(1) {
+  font-weight: bold;
+}
+
+.attendees {
+  display: grid;
+  grid-gap: .5em;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.appointment.one .attendees {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.appointment.two .attendees {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.appointments-wrapper.more-than-three .appointment .attendee-list {
+  font-size: 1em;
+}
+
+.appointments-wrapper.more-than-three .appointment .attendees {
+  grid-template-columns: 1fr 1fr;
+}
+
+#no-appointments-wrapper {
+  display: grid;
+  height: 100%;
+}
+
+.no-appointments {
+  display: grid;
+  align-content: center;
+  background-color: #7CB67A;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.no-appointments > div {
+  display: grid;
+  grid-gap: 2em;
+}
+
+.no-appointments > div > div:nth-child(1) {
+  font-size: 2em;
+}
+
+.non-appointment-message {
+  font-size: 4em;
+  font-weight: bold;
+  display: grid;
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+}
+
+.note {
+  margin-top: 2em;
+  font-size: .5em;
+  font-weight: normal;
+}
+
+.error-details {
+  margin-top: 1em;
+  font-size: .75em;
+}
+
+.error-details div {
+  margin-top: 1em;
+}
+
+#door-closed-upcoming-appointment {
+  font-size: .5em;
+  font-weight: initial;
+  border: 1px solid #fa9898;
+  border-radius: 5px;
+  padding: .5em;
+  margin-top: 1em;
+}
+
+#door-closed-upcoming-appointment > div:first-child {
+  margin-bottom: .5em;
+  font-weight: bold;
+}
+
+#door-closed-upcoming-appointment > div:last-child {
+  font-size: .8em;
+  color: #ccc;
+}

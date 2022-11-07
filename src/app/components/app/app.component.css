@@ -1,0 +1,6 @@
+#parent {
+    display: grid;
+    grid-template-rows: auto 1fr 2em;
+    width: 100vw;
+    height: 100vh;
+}

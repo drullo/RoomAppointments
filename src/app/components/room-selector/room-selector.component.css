@@ -1,0 +1,47 @@
+form {
+  background-color: #F7F7F7;
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr 1fr;
+  grid-gap: 1em;
+  padding: 1em;
+  padding-bottom: 0;
+  height: 5em;
+}
+
+#room-info {
+  background-color: #F7F7F7;
+  text-align: center;
+  color: #6e6e6e;
+  padding: .5em;
+  font-size: 1.5em;
+}
+
+#room-info label {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+#room-info span:nth-child(1) {
+  color: #909090;
+}
+
+#room-info span:nth-child(2) {
+  font-weight: bold;
+}
+
+mat-select, mat-checkbox {
+  align-self: center;
+}
+
+button {
+  height: 3em;
+}
+
+a, a:hover, a:visited, a:active {
+  color: #5252a7;
+}
+
+#inout-notes {
+  font-style: italic;
+  font-size: .8em;
+}

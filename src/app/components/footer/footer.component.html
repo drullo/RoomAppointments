@@ -1,0 +1,15 @@
+<!-- Current time and last refresh time -->
+<div id="time-info">
+  <div id="current-time" *ngIf="currentTime">
+    <div>
+      <span>Version:</span> {{ version }}
+    </div>
+    <div>
+      <span>Current Time:</span> {{ currentTime | date:'mediumTime' }}
+    </div>
+  </div>
+
+  <div id="timestamp" *ngIf="lastCheckTime">
+    <span>Last Checked:</span> {{ lastCheckTime | date:"short" }}
+  </div>
+</div>

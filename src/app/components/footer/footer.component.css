@@ -1,0 +1,30 @@
+#time-info {
+    align-self: end;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 2em;
+    align-content: center;
+    padding: 0 1em;
+    grid-gap: 1em;
+    background-color: #3b3b3b;
+    color: #fff;
+}
+
+#timestamp {
+    justify-self: end;
+    font-size: .85em;
+    color: #cff5ce
+}
+
+#timestamp > span:nth-child(1) {
+    font-weight: bold;
+}
+
+#current-time {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+#current-time span {
+    font-weight: bold;
+}

@@ -1,0 +1,38 @@
+<div id="parent">
+    <cp-room-selector
+        [showMenu]="showMenu"
+        [inOutStatus]="inOutStatus"
+        (gotQuery)="gotQuery($event)"
+        (menuShown)="showMenu=true">
+    </cp-room-selector>
+
+    <cp-appointments
+        [query]="query"
+        [inOutStatus]="inOutStatus"
+        [doorStatus]="doorStatus"
+        [isPerson]="isPerson"
+        [error]="error"
+        [errorType]="errorType"
+        [errorTime]="errorTime"
+        (gotAppointments)="gotAppointments()"
+        (click)="showMenu=false">
+    </cp-appointments>
+
+    <cp-footer
+        [lastCheckTime]="lastCheckTime"
+        (click)="showMenu=false">
+    </cp-footer>
+</div>
+
+<!-- These components have no UI, so we don't want them in 'parent' affecting the layout -->
+<cp-door-status *ngIf="isPerson && query.includeDoorStatus"
+    [sAMAccountName]="query.room.sAMAccountName"
+    (gotDoorStatus)="doorStatus = $event"
+    (gotError)="gotDoorError($event)">
+</cp-door-status>
+
+<cp-in-out-status *ngIf="isPerson"
+    [sAMAccountName]="query.room.sAMAccountName"
+    (gotInOutStatus)="inOutStatus = $event"
+    (gotError)="gotInOutError($event)">
+</cp-in-out-status>

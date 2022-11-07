@@ -1,0 +1,32 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "module": "es2020",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es2020",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "baseUrl": "./src",
+    "paths": {
+      "@services/*": ["app/services/*"],
+      "@model/*": ["app/model/*"],
+      "@components/*": ["app/components/*"],
+      "@modules/*": ["app/modules/*"],
+      "@pipes/*": ["app/pipes/*"],
+      "@routeguards/*": ["app/route-guards/*"],
+      "@environment/*": ["environments/*"]
+    }
+  }
+}
