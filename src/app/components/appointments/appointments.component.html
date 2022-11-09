@@ -46,7 +46,7 @@
           <span *ngIf="nextAppointment.sensitivity !== 'Private'">
             <span>{{ nextAppointment?.subject | stripMiddleName }}</span>
             <!-- Location -->
-            <span *ngIf="nextAppointment.location"> @ {{ nextAppointment.location }}</span>
+            <span *ngIf="nextAppointment.location?.displayName"> @ {{ nextAppointment.location.displayName }}</span>
           </span>
 
           <span *ngIf="nextAppointment.sensitivity === 'Private'">Private Appointment</span>
