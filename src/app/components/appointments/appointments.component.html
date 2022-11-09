@@ -43,13 +43,13 @@
           </div>
 
           <!-- Subject -->
-          <span *ngIf="nextAppointment.sensitivity !== 2">
+          <span *ngIf="nextAppointment.sensitivity !== 'Private'">
             <span>{{ nextAppointment?.subject | stripMiddleName }}</span>
             <!-- Location -->
             <span *ngIf="nextAppointment.location"> @ {{ nextAppointment.location }}</span>
           </span>
 
-          <span *ngIf="nextAppointment.sensitivity === 2">Private Appointment</span>
+          <span *ngIf="nextAppointment.sensitivity === 'Private'">Private Appointment</span>
         </div>
       </div>
     </div>
@@ -74,17 +74,17 @@
         </h1>
 
         <h2 class="subject">
-          <span *ngIf="appointment.sensitivity !== 2" [class.name-with-photo]="employees && photos && (appointment.organizer.emailAddress.address | employeeByEmail:employees)">
+          <span *ngIf="appointment.sensitivity !== 'Private'" [class.name-with-photo]="employees && photos && (appointment.organizer.emailAddress.address | employeeByEmail:employees)">
             <span>{{ appointment?.subject | limitSubjectLength }}</span>
             <img *ngIf="photoBlob(appointment.organizer.emailAddress.address)" [src]="photoBlob(appointment.organizer.emailAddress.address)" alt="" />
           </span>
-          <span *ngIf="appointment.sensitivity === 2">Private Appointment</span>
+          <span *ngIf="appointment.sensitivity === 'Private'">Private Appointment</span>
         </h2>
       </div>
 
       <div class="attendee-info">
         <!-- Required Attendees -->
-        <div class="attendee-list" *ngIf="appointment.sensitivity !== 2 && requiredAttendees(appointment).length">
+        <div class="attendee-list" *ngIf="appointment.sensitivity !== 'Private' && requiredAttendees(appointment).length">
           <div>Required Attendees</div>
 
           <div class="attendees">
