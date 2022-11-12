@@ -13,7 +13,7 @@ import { DoorStatus } from '@model/door-status';
 import { PhotoService } from '@services/photo.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CalendarService } from '@services/calendar.service';
-import { Attendee, CalendarEvent } from '@model/calendar-event';
+import { Attendee, CalendarEvent } from '@cleavelandprice/ngx-lib/msgraph';
 import { ErrorHandlerService } from '@services/error-handler.service';
 //#endregion
 

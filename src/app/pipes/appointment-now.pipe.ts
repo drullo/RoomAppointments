@@ -1,4 +1,4 @@
-import { CalendarEvent } from '@model/calendar-event';
+import { CalendarEvent } from '@cleavelandprice/ngx-lib/msgraph';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
