@@ -12,8 +12,10 @@ export class LoggingService {
   log = structuredLog.configure()
     // Have to add enrichers before .writeTo() - otherwise they have no effect (doc doesn't mention this)
     .enrich({
-      'source': config.logging.source,
-      'userAgent': navigator.userAgent
+      'Source': config.logging.source,
+      'UserAgent': navigator.userAgent,
+      'Authors:': config.logging.authors,
+      'AppType': config.logging.appType
     })
     .writeTo(new structuredLog.ConsoleSink({ includeProperties: true, includeTimestamps: true }))
     .writeTo(seqSink({

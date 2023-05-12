@@ -13,7 +13,9 @@ export const config = {
     password: 'viewer',
   },
   logging: {
-    source: 'Conference Rooms'
+    source: 'Conference Rooms',
+    authors: 'Dan Rullo',
+    appType: 'Web'
   },
   appName: require('../../package.json').name,
   version: require('../../package.json').version
