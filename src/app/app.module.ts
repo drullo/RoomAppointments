@@ -12,7 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatLuxonDateModule } from '@angular/material-luxon-adapter';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -65,7 +65,7 @@ import { LimitSubjectLengthPipe } from './pipes/limit-subject-length.pipe';
         MatDatepickerModule,
         MatDialogModule,
         MatInputModule,
-        MatMomentDateModule,
+        MatLuxonDateModule,
         MatProgressSpinnerModule,
         MatSelectModule,
 

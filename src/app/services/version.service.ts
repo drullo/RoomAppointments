@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 import { config } from '@environment/config';
 
 @Injectable({
@@ -29,7 +29,7 @@ export class VersionService {
       .subscribe(app => {
         // Is there a version mismatch?  If not, then the method just exits.
         if (app.version !== config.version) {
-          const today = JSON.stringify(moment().startOf('day'));
+          const today = JSON.stringify(DateTime.now().startOf('day'));
           const lastRefresh = localStorage.getItem('lastVersionRefresh');
 
           // Check to make sure we haven't already tried to refresh today

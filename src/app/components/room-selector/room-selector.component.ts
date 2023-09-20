@@ -2,7 +2,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { interval } from 'rxjs';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 import { environment } from '@environment/environment';
 import { User } from '@cleavelandprice/ngx-lib/active-directory';
 
@@ -25,9 +25,9 @@ export class RoomSelectorComponent implements OnInit {
   @Output() menuShown = new EventEmitter();
   @Output() gotQuery = new EventEmitter<AppointmentQuery>();
   rooms: User[];
-  selectedRoom: DirectoryEntry;
+  selectedRoom: User;
   password: string;
-  startDate = moment().startOf('day');
+  startDate = DateTime.now().startOf('day');
   includeEnded = false;
   includeDoorStatus: boolean;
   //#endregion
@@ -75,7 +75,7 @@ export class RoomSelectorComponent implements OnInit {
       room: this.selectedRoom,
       userName: this.selectedRoom.sAMAccountName,
       pw: this.password,
-      rangeStart: this.startDate.toDate().toLocaleDateString(),
+      rangeStart: this.startDate.toISO(),
       includeEnded: this.includeEnded,
       includeDoorStatus: this.includeDoorStatus
     };
@@ -90,8 +90,8 @@ export class RoomSelectorComponent implements OnInit {
   private monitorDayChanges(): void {
     interval(environment.dayChangeRefreshMs).subscribe(() => {
       // Did the day just change?  If so, change the startDate value
-      const today = moment().startOf('day');
-      if (today > this.startDate && today.hour() === 0) {
+      const today = DateTime.now().startOf('day');
+      if (today > this.startDate && today.hour === 0) {
         console.log(today, 'Adjusting date for new day...');
         this.startDate = today;
         this.emitQuery();

@@ -2,7 +2,7 @@
 //#region Imports
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import {interval, Subscription } from 'rxjs';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 import { config } from '@environment/config';
 //#endregion
 
@@ -21,7 +21,7 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   //#region Lifecycle
   ngOnInit(): void {
-    this.tickerSubscription = interval(1000).subscribe(() => this.currentTime = moment().toDate());
+    this.tickerSubscription = interval(1000).subscribe(() => this.currentTime = DateTime.now().toJSDate());
   }
 
   ngOnDestroy(): void {
