@@ -12,8 +12,6 @@ export class PhotoService {
 
   getPhotoContent(filename: string): Observable<any> {
     const body = {
-      username: config.sharePoint.username,
-      password: config.sharePoint.password,
       site: `${config.sharePoint.serverUrl}/${config.sharePoint.employeePhotoSite}`,
       folder: `${config.sharePoint.employeePhotoSite}/${config.sharePoint.employeePhotoList}`,
       filename: filename.split('/').slice(-1)[0]

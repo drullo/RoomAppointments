@@ -8,9 +8,7 @@ export const config = {
   sharePoint: {
     serverUrl: 'https://sharepoint.cleavelandprice.com',
     employeePhotoSite: 'DigitalDisplay',
-    employeePhotoList: 'Employee Thumbnail Photos',
-    username: 'viewer',
-    password: 'viewer',
+    employeePhotoList: 'Employee Thumbnail Photos'
   },
   logging: {
     source: 'Conference Rooms',
