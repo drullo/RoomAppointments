@@ -1,52 +1,61 @@
 <!-- Room selector menu -->
-<form *ngIf="showMenu">
-  <!-- Room selector -->
-  <mat-form-field>
-    <mat-select placeholder="Conference Room" [(ngModel)]="selectedRoom" name="selectedRoom" required (selectionChange)="emitQuery()">
-      <mat-option *ngFor="let room of rooms" [value]="room">{{ room.displayName }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <!-- Date picker -->
-  <mat-form-field>
-    <input matInput [matDatepicker]="picker" placeholder="Choose Date" [(ngModel)]="startDate" name="startDate" required (click)="picker.open()"
-      (dateChange)="emitQuery()">
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-
-  <div>
-    <!-- Include Ended Appointments checkbox -->
-    <mat-checkbox [(ngModel)]="includeEnded" name="includeEnded" (change)="emitQuery()">Include meetings in the past</mat-checkbox>
+@if (showMenu) {
+  <form>
+    <!-- Room selector -->
+    <mat-form-field>
+      <mat-select placeholder="Conference Room" [(ngModel)]="selectedRoom" name="selectedRoom" required (selectionChange)="emitQuery()">
+        @for (room of rooms; track room) {
+          <mat-option [value]="room">{{ room.displayName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <!-- Date picker -->
+    <mat-form-field>
+      <input matInput [matDatepicker]="picker" placeholder="Choose Date" [(ngModel)]="startDate" name="startDate" required (click)="picker.open()"
+        (dateChange)="emitQuery()">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
     <div>
-      <mat-checkbox [(ngModel)]="includeDoorStatus" name="includeDoorStatus" (change)="emitQuery()">Include door status</mat-checkbox>
+      <!-- Include Ended Appointments checkbox -->
+      <mat-checkbox [(ngModel)]="includeEnded" name="includeEnded" (change)="emitQuery()">Include meetings in the past</mat-checkbox>
+      <div>
+        <mat-checkbox [(ngModel)]="includeDoorStatus" name="includeDoorStatus" (change)="emitQuery()">Include door status</mat-checkbox>
+      </div>
     </div>
-  </div>
-
-  <!-- Submit button -->
-  <button mat-button mat-raised-button color="primary" (click)="emitQuery()">Show Appointments</button>
-</form>
+    <!-- Submit button -->
+    <button mat-button mat-raised-button color="primary" (click)="emitQuery()">Show Appointments</button>
+  </form>
+}
 
 <!-- Room info -->
-<div id="room-info" *ngIf="selectedRoom && !showMenu" (click)="showMenu = true; menuShown.emit()">
-  <label>{{ selectedRoom.displayName }}</label>
-
-  <!-- Phone extension -->
-  <div *ngIf="selectedRoom.telephoneNumber">
-    <span>Phone:</span>
-    <span>{{ selectedRoom.telephoneNumber.toLowerCase().replace('ext. ', '') }}</span>
-    <span *ngIf="(selectedRoom | roomIsPerson) && selectedRoom.mail">
-      /
-      <a (click)="composeEmail($event)">{{ selectedRoom.mail.toLowerCase() }}</a>
-    </span>
+@if (selectedRoom && !showMenu) {
+  <div id="room-info" (click)="showMenu = true; menuShown.emit()">
+    <label>{{ selectedRoom.displayName }}</label>
+    <!-- Phone extension -->
+    @if (selectedRoom.telephoneNumber) {
+      <div>
+        <span>Phone:</span>
+        <span>{{ selectedRoom.telephoneNumber.toLowerCase().replace('ext. ', '') }}</span>
+        @if ((selectedRoom | roomIsPerson) && selectedRoom.mail) {
+          <span>
+            /
+            <a [href]="selectedRoom.mail.toLowerCase()">{{ selectedRoom.mail.toLowerCase() }}</a> <!--(click)="composeEmail($event)"-->
+          </span>
+        }
+      </div>
+    }
+    <!-- In/Out Board status (if person) -->
+    @if ((selectedRoom | roomIsPerson) && inOutStatus && inOutStatus.status.description) {
+      <div>
+        <span>In/Out Board Status:</span>
+        <span>{{ inOutStatus.status.description }}</span>
+        @if (inOutStatus.notes) {
+          <div id="inout-notes">
+            {{ stripInvalidChars(inOutStatus.notes) }}
+          </div>
+        }
+      </div>
+    }
   </div>
-
-  <!-- In/Out Board status (if person) -->
-  <div *ngIf="(selectedRoom | roomIsPerson) && inOutStatus && inOutStatus.status.description">
-    <span>In/Out Board Status:</span>
-    <span>{{ inOutStatus.status.description }}</span>
-    <div *ngIf="inOutStatus.notes" id="inout-notes">
-      {{ inOutStatus.notes }}
-    </div>
-  </div>
-</div>
+}

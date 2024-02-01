@@ -117,5 +117,11 @@ export class RoomSelectorComponent implements OnInit {
         this.showMenu = false;
       });
   }
+
+  stripInvalidChars(raw: string): string {
+    if (!raw) { return; }
+
+    return raw.replace(/\0/g, '');
+  }
   //#endregion
 }

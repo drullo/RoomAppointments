@@ -15,6 +15,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { CalendarService } from '@services/calendar.service';
 import { Attendee, CalendarEvent } from '@cleavelandprice/ngx-lib/msgraph';
 import { ErrorHandlerService } from '@services/error-handler.service';
+import { DateTime } from 'luxon';
 //#endregion
 
 @Component({
@@ -284,5 +285,9 @@ export class AppointmentsComponent implements OnDestroy, OnChanges {
 
   optionalAttendees(appointment: CalendarEvent): Attendee[] {
     return appointment.attendees.filter(a => a.type === 1);
+  }
+
+  hasEnded(appointment: CalendarEvent): boolean {
+    return DateTime.fromISO(appointment.end) < DateTime.now();
   }
 }

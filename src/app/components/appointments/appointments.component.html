@@ -1,153 +1,196 @@
 <div id="parent">
 
   <!-- Error -->
-  <div class="appointments-wrapper" *ngIf="error">
-    <div class="block appointment now non-appointment-message">
-      {{ errorType }} Error {{ error.status }}: {{ error.statusText }}
-      <div class="note">
-        <span *ngIf="errorType === 'Appointments'">
-          You may have forgotten to enter a password if it's required for the selected room/person.
-          <br />Or you may have entered an incorrect password.
-        </span>
-
-        <div class="error-details">
-          {{ error.message }}
-          <div>
-            {{ errorTime | date:'short' }}
-          </div>
-          <div *ngIf="error.error" (click)="showErrorDetails = !showErrorDetails">
-            <div *ngIf="showErrorDetails">HIDE DETAILS</div>
-            <div *ngIf="!showErrorDetails">SHOW DETAILS</div>
-
-            <div *ngIf="showErrorDetails" [innerHTML]="error | errorDetails"></div>
+  @if (error) {
+    <div class="appointments-wrapper">
+      <div class="block appointment now non-appointment-message">
+        {{ errorType }} Error {{ error.status }}: {{ error.statusText }}
+        <div class="note">
+          @if (errorType === 'Appointments') {
+            <span>
+              You may have forgotten to enter a password if it's required for the selected room/person.
+              <br />Or you may have entered an incorrect password.
+            </span>
+          }
+          <div class="error-details">
+            {{ error.message }}
+            <div>
+              {{ errorTime | date:'short' }}
+            </div>
+            @if (error.error) {
+              <div (click)="showErrorDetails = !showErrorDetails">
+                @if (showErrorDetails) {
+                  <div>HIDE DETAILS</div>
+                }
+                @if (!showErrorDetails) {
+                  <div>SHOW DETAILS</div>
+                }
+                @if (showErrorDetails) {
+                  <div [innerHTML]="error | errorDetails"></div>
+                }
+              </div>
+            }
           </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 
   <!-- Door Closed -->
-  <div class="appointments-wrapper" *ngIf="!error && doorStatus?.isClosed">
-    <div class="block appointment now non-appointment-message">
-      Door Closed
-
-      <!-- The next upcoming appointment -->
-      <div id="door-closed-upcoming-appointment" *ngIf="nextAppointment">
-        <div>Next Appointment</div>
-
-        <div>
-          <!-- Date/time -->
-          <div>
-            <span *ngIf="!nextAppointment.isToday">{{ nextAppointment.start | date:'shortDate' }}</span>
-            {{ nextAppointment.start | date:'shortTime' }} - {{ nextAppointment.end | date:'shortTime' }}
+  @if (!error && doorStatus?.isClosed) {
+    <div class="appointments-wrapper">
+      <div class="block appointment now non-appointment-message">
+        Door Closed
+        <!-- The next upcoming appointment -->
+        @if (nextAppointment) {
+          <div id="door-closed-upcoming-appointment">
+            <div>Next Appointment</div>
+            <div>
+              <!-- Date/time -->
+              <div>
+                @if (!nextAppointment.isToday) {
+                  <span>{{ nextAppointment.start | date:'shortDate' }}</span>
+                }
+                {{ nextAppointment.start | date:'shortTime' }} - {{ nextAppointment.end | date:'shortTime' }}
+              </div>
+              <!-- Subject -->
+              @if (nextAppointment.sensitivity?.toLowerCase() !== 'private') {
+                <span>
+                  <span>{{ nextAppointment?.subject | stripMiddleName }}</span>
+                  <!-- Location -->
+                  @if (nextAppointment.location?.displayName) {
+                    <span> &#64; {{ nextAppointment.location.displayName }}</span>
+                  }
+                </span>
+              }
+              @if (nextAppointment.sensitivity?.toLowerCase() === 'private') {
+                <span>Private Appointment</span>
+              }
+            </div>
           </div>
-
-          <!-- Subject -->
-          <span *ngIf="nextAppointment.sensitivity?.toLowerCase() !== 'private'">
-            <span>{{ nextAppointment?.subject | stripMiddleName }}</span>
-            <!-- Location -->
-            <span *ngIf="nextAppointment.location?.displayName"> @ {{ nextAppointment.location.displayName }}</span>
-          </span>
-
-          <span *ngIf="nextAppointment.sensitivity?.toLowerCase() === 'private'">Private Appointment</span>
-        </div>
+        }
       </div>
     </div>
-  </div>
+  }
 
   <!-- Appointments -->
-  <div class="appointments-wrapper"
-    *ngIf="!error && (!doorStatus?.isClosed && (appointments?.length || (appointments | appointmentNow)))"
-    [class.more-than-three]="appointments.length > 3">
-
-    <div *ngFor="let appointment of appointments" class="block appointment" [class.now]="appointment.isHappeningNow" [class.one]="appointments.length === 1"
-      [class.two]="appointments.length === 2" [class.three]="appointments.length === 3" [class.in-past]="appointment.isOver">
-
-      <!-- Heading -->
-      <div class="heading">
-        <h1>
-          <span *ngIf="!appointment.isToday">{{ appointment.start | date:'shortDate' }}</span>
-          {{ appointment.start | date:'shortTime' }}
-          -
-          <span *ngIf="appointment.spansMultipleDays">{{ appointment.end | date:'shortDate' }}</span>
-          {{ appointment.end | date:'shortTime' }}
-        </h1>
-
-        <h2 class="subject">
-          <span *ngIf="appointment.sensitivity?.toLowerCase() !== 'private'" [class.name-with-photo]="employees && photos && (appointment.organizer.emailAddress.address | employeeByEmail:employees)">
-            <span>{{ appointment?.subject | limitSubjectLength }}</span>
-            <img *ngIf="photoBlob(appointment.organizer.emailAddress.address)" [src]="photoBlob(appointment.organizer.emailAddress.address)" alt="" />
-          </span>
-          <span *ngIf="appointment.sensitivity?.toLowerCase() === 'private'">Private Appointment</span>
-        </h2>
-      </div>
-
-      <div class="attendee-info">
-        <!-- Required Attendees -->
-        <div class="attendee-list" *ngIf="appointment.sensitivity?.toLowerCase() !== 'private' && requiredAttendees(appointment).length">
-          <div>Required Attendees</div>
-
-          <div class="attendees">
-            <div *ngFor="let attendee of requiredAttendees(appointment)"
-              [class.name-with-photo]="employees && photos && attendee.emailAddress.address && (attendee.emailAddress.address | employeeByEmail:employees)">
-
-              <img *ngIf="photoBlob(attendee.emailAddress.address)" [src]="photoBlob(attendee.emailAddress.address)" alt="" />
-              <a [href]="'mailto:' + attendee.emailAddress.address">
-                <!--{{ attendee.name | stripMiddleName }}-->
-                {{ attendee.emailAddress.name }}
-              </a>
-            </div>
+  @if (!error && (!doorStatus?.isClosed && (appointments?.length || (appointments | appointmentNow)))) {
+    <div class="appointments-wrapper"
+      [class.more-than-three]="appointments.length > 3">
+      @for (appointment of appointments; track appointment) {
+        <div class="block appointment" [class.now]="appointment.isHappeningNow" [class.one]="appointments.length === 1"
+          [class.two]="appointments.length === 2" [class.three]="appointments.length === 3" [class.in-past]="hasEnded(appointment)">
+          <!-- Heading -->
+          <div class="heading">
+            <h1>
+              @if (!appointment.isToday) {
+                <span>{{ appointment.start | date:'shortDate' }}</span>
+              }
+              {{ appointment.start | date:'shortTime' }}
+              -
+              @if (appointment.spansMultipleDays) {
+                <span>{{ appointment.end | date:'shortDate' }}</span>
+              }
+              {{ appointment.end | date:'shortTime' }}
+            </h1>
+            <h2 class="subject">
+              @if (appointment.sensitivity?.toLowerCase() !== 'private') {
+                <span [class.name-with-photo]="employees && photos && (appointment.organizer.emailAddress.address | employeeByEmail:employees)">
+                  <span>{{ appointment?.subject | limitSubjectLength }}</span>
+                  @if (photoBlob(appointment.organizer.emailAddress.address)) {
+                    <img [src]="photoBlob(appointment.organizer.emailAddress.address)" alt="" />
+                  }
+                </span>
+              }
+              @if (appointment.sensitivity?.toLowerCase() === 'private') {
+                <span>Private Appointment</span>
+              }
+            </h2>
+          </div>
+          <div class="attendee-info">
+            <!-- Required Attendees -->
+            @if (appointment.sensitivity?.toLowerCase() !== 'private' && requiredAttendees(appointment).length) {
+              <div class="attendee-list">
+                <div>Required Attendees</div>
+                <div class="attendees">
+                  @for (attendee of requiredAttendees(appointment); track attendee) {
+                    <div
+                      [class.name-with-photo]="employees && photos && attendee.emailAddress.address && (attendee.emailAddress.address | employeeByEmail:employees)">
+                      @if (photoBlob(attendee.emailAddress.address)) {
+                        <img [src]="photoBlob(attendee.emailAddress.address)" alt="" />
+                      }
+                      <a [href]="'mailto:' + attendee.emailAddress.address">
+                        <!--{{ attendee.name | stripMiddleName }}-->
+                        {{ attendee.emailAddress.name }}
+                      </a>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            <!-- Optional Attendees -->
+            @if (optionalAttendees(appointment).length) {
+              <div class="attendee-list optional">
+                <div>Optional Attendees</div>
+                <div class="attendees">
+                  @for (attendee of optionalAttendees(appointment); track attendee) {
+                    <div
+                      [class.name-with-photo]="employees && photos && attendee.emailAddress.address && (attendee.emailAddress.address | employeeByEmail:employees)">
+                      @if (photoBlob(attendee.emailAddress.address)) {
+                        <img [src]="photoBlob(attendee.emailAddress.address)" alt="" />
+                      }
+                      <a [href]="'mailto:' + attendee.emailAddress.address">{{ attendee.emailAddress.name | stripMiddleName }}</a>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            <!-- No Attendees -->
+            @if (!requiredAttendees(appointment).length && !optionalAttendees(appointment).length) {
+              <div class="no-attendees">
+                No attendees have been included in this meeting.
+              </div>
+            }
           </div>
         </div>
-
-        <!-- Optional Attendees -->
-        <div class="attendee-list optional" *ngIf="optionalAttendees(appointment).length">
-          <div>Optional Attendees</div>
-
-          <div class="attendees">
-            <div *ngFor="let attendee of optionalAttendees(appointment)"
-              [class.name-with-photo]="employees && photos && attendee.emailAddress.address && (attendee.emailAddress.address | employeeByEmail:employees)">
-              <img *ngIf="photoBlob(attendee.emailAddress.address)" [src]="photoBlob(attendee.emailAddress.address)" alt="" />
-              <a [href]="'mailto:' + attendee.emailAddressaddress">{{ attendee.emailAddress.name | stripMiddleName }}</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- No Attendees -->
-        <div class="no-attendees" *ngIf="!requiredAttendees(appointment).length && !optionalAttendees(appointment).length">
-          No attendees have been included in this meeting.
-        </div>
-      </div>
+      }
     </div>
-  </div>
+  }
 
   <!-- No Appointments -->
-  <div id="no-appointments-wrapper"
-    *ngIf="!error && (!doorStatus?.isClosed && appointments?.length == 0)">
-    <div class="block"
-      [class.no-appointments]="!inOutStatus || inOutStatus.status.description.toLowerCase().startsWith('available')"
-      [class.appointment]="inOutStatus?.status.description.toLowerCase().startsWith('unavailable')"
-      [class.now]="inOutStatus?.status.description.toLowerCase().startsWith('unavailable')"
-      [class.non-appointment-message]="inOutStatus?.status.description.toLowerCase().startsWith('unavailable')">
-      <!-- Room is person and available -->
-      <div *ngIf="(query.room | roomIsPerson) && (!inOutStatus || inOutStatus.status.description.toLowerCase().startsWith('available'))">
-        <div>Available</div>
-        <div>
-          No appointments on {{ this.query.rangeStart | date:'fullDate' }}
-        </div>
-      </div>
-      <!-- Room is person, but unavailable -->
-      <div *ngIf="(query.room | roomIsPerson) && (inOutStatus?.status.description.toLowerCase().startsWith('unavailable'))">
-        {{ inOutStatus.status.description }}
-      </div>
-
-      <!-- Regular room - not a person -->
-      <div *ngIf="!(query.room | roomIsPerson)">
-        <div>Room Available</div>
-        <div>
-          No appointments are scheduled in this room on {{ this.query.rangeStart | date:'fullDate' }}
-        </div>
+  @if (!error && (!doorStatus?.isClosed && appointments?.length == 0)) {
+    <div id="no-appointments-wrapper"
+      >
+      <div class="block"
+        [class.no-appointments]="!inOutStatus || inOutStatus.status.description.toLowerCase().startsWith('available')"
+        [class.appointment]="inOutStatus?.status.description.toLowerCase().startsWith('unavailable')"
+        [class.now]="inOutStatus?.status.description.toLowerCase().startsWith('unavailable')"
+        [class.non-appointment-message]="inOutStatus?.status.description.toLowerCase().startsWith('unavailable')">
+        <!-- Room is person and available -->
+        @if ((query.room | roomIsPerson) && (!inOutStatus || inOutStatus.status.description.toLowerCase().startsWith('available'))) {
+          <div>
+            <div>Available</div>
+            <div>
+              No appointments on {{ this.query.rangeStart | date:'fullDate' }}
+            </div>
+          </div>
+        }
+        <!-- Room is person, but unavailable -->
+        @if ((query.room | roomIsPerson) && (inOutStatus?.status.description.toLowerCase().startsWith('unavailable'))) {
+          <div>
+            {{ inOutStatus.status.description }}
+          </div>
+        }
+        <!-- Regular room - not a person -->
+        @if (!(query.room | roomIsPerson)) {
+          <div>
+            <div>Room Available</div>
+            <div>
+              No appointments are scheduled in this room on {{ this.query.rangeStart | date:'fullDate' }}
+            </div>
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 </div>
