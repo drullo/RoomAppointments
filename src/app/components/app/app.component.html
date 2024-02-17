@@ -25,15 +25,15 @@
 </div>
 
 <!-- These components have no UI, so we don't want them in 'parent' affecting the layout -->
-@if (isPerson && query.includeDoorStatus) {
-  <cp-door-status
-    [sAMAccountName]="query.room.sAMAccountName"
-    (gotDoorStatus)="doorStatus = $event"
-    (gotError)="gotDoorError($event)">
-  </cp-door-status>
-}
-
 @if (isPerson) {
+  @if (query.includeDoorStatus) {
+    <cp-door-status
+      [sAMAccountName]="query.room.sAMAccountName"
+      (gotDoorStatus)="doorStatus = $event"
+      (gotError)="gotDoorError($event)">
+    </cp-door-status>
+  }
+
   <cp-in-out-status
     [sAMAccountName]="query.room.sAMAccountName"
     (gotInOutStatus)="inOutStatus = $event"

@@ -1,11 +1,9 @@
-//#region Imports
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { environment } from '@environment/environment';
 import { AppointmentQuery } from '@model/appointment-query';
-import { InOutStatus } from '@model/in-out-status';
 import { DoorStatus } from '@model/door-status';
+import { InOutStatus } from '@model/in-out-status';
 import { VersionService } from '@services/version.service';
-//#endregion
 
 @Component({
   selector: 'cp-root',
@@ -13,6 +11,8 @@ import { VersionService } from '@services/version.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  private versionService = inject(VersionService);
+
   //#region Fields
   query: AppointmentQuery;
   lastCheckTime: Date;
@@ -27,14 +27,10 @@ export class AppComponent implements OnInit {
   private inOutError: any;
   //#endregion
 
-  //#region Lifecycle
-  constructor(private versionService: VersionService) { }
-
   ngOnInit(): void {
     this.versionService.checkVersion();
   }
-  //#endregion
-
+  
   //#region Utilities
   gotQuery(query: AppointmentQuery): void {
     this.query = query;

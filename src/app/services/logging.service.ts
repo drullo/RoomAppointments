@@ -23,6 +23,4 @@ export class LoggingService {
     }))
     .minLevel(environment.logging.minLevel)
     .create();
-
-  constructor() { }
 }

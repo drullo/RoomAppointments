@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { config } from '@environment/config';
 import { AppointmentQuery } from '@model/appointment-query';
 import { Observable } from 'rxjs';
@@ -8,9 +8,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DefaultQueryService {
-  private url = `${config.utilityApiUrl}/roomappointmentsconfig`;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) { }
+  private url = `${config.utilityApiUrl}/roomappointmentsconfig`;
 
   getQuery(): Observable<AppointmentQuery> {
     return this.http.get<AppointmentQuery>(this.url);

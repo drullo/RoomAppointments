@@ -4,7 +4,7 @@
     <!-- Room selector -->
     <mat-form-field>
       <mat-select placeholder="Conference Room" [(ngModel)]="selectedRoom" name="selectedRoom" required (selectionChange)="emitQuery()">
-        @for (room of rooms; track room) {
+        @for (room of rooms; track room.sAMAccountName) {
           <mat-option [value]="room">{{ room.displayName }}</mat-option>
         }
       </mat-select>

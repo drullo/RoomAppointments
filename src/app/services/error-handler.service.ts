@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
-import { timer } from 'rxjs';
 import { DateTime } from 'luxon';
-//import { LoggingService } from '@services/logging.service';
+import { timer } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorHandlerService {
   recentErrors: {sAMAccountName: string, errorType: string, time: DateTime }[] = [];
-
-  //constructor(private loggingService: LoggingService) { }
 
   sendError(errorType: string, sAMAccountName: string, error: any): void {
     console.log(`${errorType} error`, error);

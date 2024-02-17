@@ -1,17 +1,13 @@
-//#region Imports
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { interval } from 'rxjs';
-import { DateTime } from 'luxon';
-import { environment } from '@environment/environment';
 import { User } from '@cleavelandprice/ngx-lib/active-directory';
-
-import { DirectoryEntry } from '@model/directory-entry';
+import { environment } from '@environment/environment';
 import { AppointmentQuery } from '@model/appointment-query';
 import { InOutStatus } from '@model/in-out-status';
-import { RoomsService } from '@services/rooms.service';
 import { DefaultQueryService } from '@services/default-query.service';
-//#endregion
+import { RoomsService } from '@services/rooms.service';
+import { DateTime } from 'luxon';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'cp-room-selector',
@@ -19,6 +15,10 @@ import { DefaultQueryService } from '@services/default-query.service';
   styleUrls: ['./room-selector.component.css']
 })
 export class RoomSelectorComponent implements OnInit {
+  public dialog = inject(MatDialog);
+  private roomsService = inject(RoomsService);
+  private defaultQueryService = inject(DefaultQueryService);
+
   //#region Fields
   @Input() showMenu: boolean;
   @Input() inOutStatus: InOutStatus;
@@ -33,11 +33,7 @@ export class RoomSelectorComponent implements OnInit {
   //#endregion
 
   //#region Lifecycle
-  constructor(public dialog: MatDialog,
-              private roomsService: RoomsService,
-              private defaultQueryService: DefaultQueryService) {}
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.monitorDayChanges();
 
     this.roomsService.get()

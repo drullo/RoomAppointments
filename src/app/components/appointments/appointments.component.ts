@@ -1,22 +1,17 @@
-//#region Imports
-import { Component, OnDestroy, OnChanges, Input, EventEmitter, Output, SimpleChanges } from '@angular/core';
-import {timer, onErrorResumeNext, Subscription, forkJoin } from 'rxjs';
-
-import { environment } from '@environment/environment';
-
-import { CleavelandPriceUser, ActiveDirectoryService } from '@cleavelandprice/ngx-lib/active-directory';
-import { PhotoItem, SharePointService } from '@cleavelandprice/ngx-lib/sharepoint';
-
-import { AppointmentQuery } from '@model/appointment-query';
-import { InOutStatus } from '@model/in-out-status';
-import { DoorStatus } from '@model/door-status';
-import { PhotoService } from '@services/photo.service';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CalendarService } from '@services/calendar.service';
+import { ActiveDirectoryService, CleavelandPriceUser } from '@cleavelandprice/ngx-lib/active-directory';
 import { Attendee, CalendarEvent } from '@cleavelandprice/ngx-lib/msgraph';
+import { PhotoItem, SharePointService } from '@cleavelandprice/ngx-lib/sharepoint';
+import { environment } from '@environment/environment';
+import { AppointmentQuery } from '@model/appointment-query';
+import { DoorStatus } from '@model/door-status';
+import { InOutStatus } from '@model/in-out-status';
+import { CalendarService } from '@services/calendar.service';
 import { ErrorHandlerService } from '@services/error-handler.service';
+import { PhotoService } from '@services/photo.service';
 import { DateTime } from 'luxon';
-//#endregion
+import { Subscription, forkJoin, onErrorResumeNext, timer } from 'rxjs';
 
 @Component({
   selector: 'cp-appointments',
@@ -24,6 +19,15 @@ import { DateTime } from 'luxon';
   styleUrls: ['./appointments.component.css']
 })
 export class AppointmentsComponent implements OnDestroy, OnChanges {
+  //#region Services
+  private calendarService = inject(CalendarService);
+  private activeDirectoryService = inject(ActiveDirectoryService);
+  private sharePointService = inject(SharePointService);
+  private photoService = inject(PhotoService);
+  private sanitizer = inject(DomSanitizer);
+  private errorHandler = inject(ErrorHandlerService);
+  //#endregion
+
   //#region Fields
   @Input() query: AppointmentQuery;
   @Input() inOutStatus: InOutStatus;
@@ -55,13 +59,6 @@ export class AppointmentsComponent implements OnDestroy, OnChanges {
   //#endregion
 
   //#region Lifecycle
-  constructor(private calendarService: CalendarService,
-              private activeDirectoryService: ActiveDirectoryService,
-              private sharePointService: SharePointService,
-              private photoService: PhotoService,
-              private sanitizer: DomSanitizer,
-              private errorHandler: ErrorHandlerService) { }
-
   ngOnDestroy(): void {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
@@ -88,34 +85,36 @@ export class AppointmentsComponent implements OnDestroy, OnChanges {
       this.sharePointService.getPhotos(),
       //this.exchangeService.getAppointments(this.query)
       this.calendarService.getEventsOn(this.query.userName, this.query.rangeStart, this.query.includeEnded)
-    ]).subscribe(([ users, photos, appointments ]) => {
-
-      this.ConfigureAppointments(appointments);
-
-      //this.employees = employees;
-      this.employees = users;
-      this.stripNonEmployees(this.appointments);
-
-      this.photos = photos;
-      this.getPhotoContent(); // For the current set of appointments;
-
-      // If this is the first time, setup a subscription to automatically refresh
-      if (!this.refreshSubscription) {
-        const checkIntervalMs = this.isPerson ?
-          environment.peopleAppointmentsRefreshMs :
-          environment.roomAppointmentsRefreshMs;
-
-        this.refreshSubscription = onErrorResumeNext(timer(checkIntervalMs, checkIntervalMs))
-          .subscribe(() => this.getData());
-      }
-
-      }, error => {
-        this.error = error;
+    ])
+    .subscribe({
+      next: ([users, photos, appointments]) => {
+        this.ConfigureAppointments(appointments);
+    
+        //this.employees = employees;
+        this.employees = users;
+        this.stripNonEmployees(this.appointments);
+    
+        this.photos = photos;
+        this.getPhotoContent(); // For the current set of appointments;
+    
+        // If this is the first time, setup a subscription to automatically refresh
+        if (!this.refreshSubscription) {
+          const checkIntervalMs = this.isPerson ?
+            environment.peopleAppointmentsRefreshMs :
+            environment.roomAppointmentsRefreshMs;
+    
+          this.refreshSubscription = onErrorResumeNext(timer(checkIntervalMs, checkIntervalMs))
+            .subscribe(() => this.getData());
+        }
+      },
+      error: (err) => {
+        this.error = err;
         this.errorTime = new Date();
         this.errorType = 'Appointments';
         this.appointments = null;
-        this.errorHandler.sendError('Appointments', this.query.userName, error);
-      });
+        this.errorHandler.sendError('Appointments', this.query.userName, err);
+      }
+    });
   }
 
   private ConfigureAppointments(appointments: CalendarEvent[]): void {

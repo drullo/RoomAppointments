@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { User } from '@cleavelandprice/ngx-lib/active-directory';
-import { Observable } from 'rxjs';
 import { config } from '@environment/config';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoomsService {
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
 
   get(): Observable<User[]> {
     // the final parameter is includeConferenceRoomPeople

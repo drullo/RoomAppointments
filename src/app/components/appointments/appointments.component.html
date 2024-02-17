@@ -21,12 +21,9 @@
               <div (click)="showErrorDetails = !showErrorDetails">
                 @if (showErrorDetails) {
                   <div>HIDE DETAILS</div>
-                }
-                @if (!showErrorDetails) {
-                  <div>SHOW DETAILS</div>
-                }
-                @if (showErrorDetails) {
                   <div [innerHTML]="error | errorDetails"></div>
+                } @else {
+                  <div>SHOW DETAILS</div>
                 }
               </div>
             }
@@ -54,7 +51,9 @@
                 {{ nextAppointment.start | date:'shortTime' }} - {{ nextAppointment.end | date:'shortTime' }}
               </div>
               <!-- Subject -->
-              @if (nextAppointment.sensitivity?.toLowerCase() !== 'private') {
+              @if (nextAppointment.sensitivity?.toLowerCase() === 'private') {
+                <span>Private Appointment</span>
+              } @else {
                 <span>
                   <span>{{ nextAppointment?.subject | stripMiddleName }}</span>
                   <!-- Location -->
@@ -62,9 +61,6 @@
                     <span> &#64; {{ nextAppointment.location.displayName }}</span>
                   }
                 </span>
-              }
-              @if (nextAppointment.sensitivity?.toLowerCase() === 'private') {
-                <span>Private Appointment</span>
               }
             </div>
           </div>
@@ -77,7 +73,7 @@
   @if (!error && (!doorStatus?.isClosed && (appointments?.length || (appointments | appointmentNow)))) {
     <div class="appointments-wrapper"
       [class.more-than-three]="appointments.length > 3">
-      @for (appointment of appointments; track appointment) {
+      @for (appointment of appointments; track appointment.id) {
         <div class="block appointment" [class.now]="appointment.isHappeningNow" [class.one]="appointments.length === 1"
           [class.two]="appointments.length === 2" [class.three]="appointments.length === 3" [class.in-past]="hasEnded(appointment)">
           <!-- Heading -->
@@ -94,16 +90,15 @@
               {{ appointment.end | date:'shortTime' }}
             </h1>
             <h2 class="subject">
-              @if (appointment.sensitivity?.toLowerCase() !== 'private') {
+              @if (appointment.sensitivity?.toLowerCase() === 'private') {
+                <span>Private Appointment</span>
+              } @else {
                 <span [class.name-with-photo]="employees && photos && (appointment.organizer.emailAddress.address | employeeByEmail:employees)">
                   <span>{{ appointment?.subject | limitSubjectLength }}</span>
                   @if (photoBlob(appointment.organizer.emailAddress.address)) {
                     <img [src]="photoBlob(appointment.organizer.emailAddress.address)" alt="" />
                   }
                 </span>
-              }
-              @if (appointment.sensitivity?.toLowerCase() === 'private') {
-                <span>Private Appointment</span>
               }
             </h2>
           </div>
@@ -113,7 +108,7 @@
               <div class="attendee-list">
                 <div>Required Attendees</div>
                 <div class="attendees">
-                  @for (attendee of requiredAttendees(appointment); track attendee) {
+                  @for (attendee of requiredAttendees(appointment); track attendee.emailAddress) {
                     <div
                       [class.name-with-photo]="employees && photos && attendee.emailAddress.address && (attendee.emailAddress.address | employeeByEmail:employees)">
                       @if (photoBlob(attendee.emailAddress.address)) {
@@ -133,7 +128,7 @@
               <div class="attendee-list optional">
                 <div>Optional Attendees</div>
                 <div class="attendees">
-                  @for (attendee of optionalAttendees(appointment); track attendee) {
+                  @for (attendee of optionalAttendees(appointment); track attendee.emailAddress) {
                     <div
                       [class.name-with-photo]="employees && photos && attendee.emailAddress.address && (attendee.emailAddress.address | employeeByEmail:employees)">
                       @if (photoBlob(attendee.emailAddress.address)) {

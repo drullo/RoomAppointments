@@ -1,13 +1,9 @@
-
-//#region Imports
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import {timer, onErrorResumeNext, Subscription } from 'rxjs';
-
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { environment } from '@environment/environment';
-import { DoorStatusService } from '@services/door-status.service';
 import { DoorStatus } from '@model/door-status';
+import { DoorStatusService } from '@services/door-status.service';
 import { ErrorHandlerService } from '@services/error-handler.service';
-//#endregion
+import { Subscription, onErrorResumeNext, timer } from 'rxjs';
 
 @Component({
   selector: 'cp-door-status',
@@ -15,6 +11,9 @@ import { ErrorHandlerService } from '@services/error-handler.service';
   styleUrls: ['./door-status.component.css']
 })
 export class DoorStatusComponent implements OnInit, OnDestroy {
+  private doorService = inject(DoorStatusService);
+  private errorHandler = inject(ErrorHandlerService);
+  
   //#region Fields
   @Input() sAMAccountName: string;
   @Output() gotDoorStatus = new EventEmitter<DoorStatus>();
@@ -23,10 +22,7 @@ export class DoorStatusComponent implements OnInit, OnDestroy {
   //#endregion
 
   //#region Lifecycle
-  constructor(private doorService: DoorStatusService,
-              private errorHandler: ErrorHandlerService) {}
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.getStatus();
   }
 
@@ -39,13 +35,15 @@ export class DoorStatusComponent implements OnInit, OnDestroy {
 
   getStatus(): void {
     this.doorService.getStatus(this.sAMAccountName)
-      .subscribe((status: DoorStatus) => {
-        this.gotDoorStatus.emit(status);
-        this.gotError.emit(); // This actually clears the error
-      },
-      error => {
-        this.gotError.emit({ error, type: 'Door Status' });
-        this.errorHandler.sendError('DoorStatus', this.sAMAccountName, error);
+      .subscribe({
+        next: (status) => {
+          this.gotDoorStatus.emit(status);
+          this.gotError.emit(); // This actually clears the error
+        },
+        error: (err) => {
+          this.gotError.emit({ err, type: 'Door Status' });
+          this.errorHandler.sendError('DoorStatus', this.sAMAccountName, err);
+        }
       });
 
     // If this is the first time, setup a subscription to automatically refresh

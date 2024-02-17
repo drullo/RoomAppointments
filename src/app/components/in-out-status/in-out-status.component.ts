@@ -1,12 +1,9 @@
-//#region Imports
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import {timer, onErrorResumeNext, Subscription } from 'rxjs';
-
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { environment } from '@environment/environment';
-import { InOutService } from '@services/in-out.service';
 import { InOutStatus } from '@model/in-out-status';
 import { ErrorHandlerService } from '@services/error-handler.service';
-//#endregion
+import { InOutService } from '@services/in-out.service';
+import { Subscription, onErrorResumeNext, timer } from 'rxjs';
 
 @Component({
   selector: 'cp-in-out-status',
@@ -14,6 +11,9 @@ import { ErrorHandlerService } from '@services/error-handler.service';
   styleUrls: ['./in-out-status.component.css']
 })
 export class InOutStatusComponent implements OnInit, OnDestroy {
+  private inOutService = inject(InOutService);
+  private errorHandler = inject(ErrorHandlerService);
+  
   //#region Fields
   @Input() sAMAccountName: string;
   @Output() gotInOutStatus = new EventEmitter<InOutStatus>();
@@ -22,10 +22,7 @@ export class InOutStatusComponent implements OnInit, OnDestroy {
   //#endregion
 
   //#region Lifecycle
-  constructor(private inOutService: InOutService,
-              private errorHandler: ErrorHandlerService) {}
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.getStatus();
   }
 
@@ -38,13 +35,15 @@ export class InOutStatusComponent implements OnInit, OnDestroy {
 
   getStatus(): void {
     this.inOutService.getStatus(this.sAMAccountName)
-      .subscribe((status: InOutStatus) => {
-        this.gotInOutStatus.emit(status);
-        this.gotError.emit(); // This actually clears the error
-      },
-      error => {
-        this.gotError.emit({ error, type: 'InOut Status' });
-        this.errorHandler.sendError('InOutStatus', this.sAMAccountName, error);
+      .subscribe({
+        next: (status) => {
+          this.gotInOutStatus.emit(status);
+          this.gotError.emit(); // This actually clears the error
+        },
+        error: (err) => {
+          this.gotError.emit({ err, type: 'InOut Status' });
+          this.errorHandler.sendError('InOutStatus', this.sAMAccountName, err);
+        }
       });
 
     // If this is the first time, setup a subscription to automatically refresh

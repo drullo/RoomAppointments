@@ -1,14 +1,13 @@
 import { HttpClient, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-
+import { Injectable, inject } from '@angular/core';
 import { config } from '@environment/config';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PhotoService {
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
 
   getPhotoContent(filename: string): Observable<any> {
     const body = {

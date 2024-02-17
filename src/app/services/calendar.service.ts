@@ -1,18 +1,17 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
 import { config } from '@environment/config';
 import { secret } from '@environment/secret';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CalendarService {
+  private http = inject(HttpClient);
   private url = `${config.utilityApiUrl}/graph/calendars`;
   private headers = new HttpHeaders()
     .set('secret', secret);
-
-  constructor(private http: HttpClient) { }
 
   getTodayEvents(account: string, includeEnded: boolean): Observable<any> {
     return this.http.get<any>(`${this.url}/${account}/today/${includeEnded}`,
