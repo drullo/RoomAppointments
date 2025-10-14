@@ -10,7 +10,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build-prod": "ng build --configuration production",
-    "upload": "powershell -NoProfile -command \"& {del \\\\cpws1\\wwwroot\\$env:npm_package_name\\* -force -recurse; copy .\\dist\\$env:npm_package_name\\* \\\\cpws1\\wwwroot\\$env:npm_package_name -recurse}\"",
+    "upload": "powershell -NoProfile -command \"& {del \\\\cpws1\\wwwroot\\$env:npm_package_name\\* -force -recurse; copy .\\dist\\$env:npm_package_name\\browser\\* \\\\cpws1\\wwwroot\\$env:npm_package_name -recurse}\"",
     "deploy": "npm run build-prod && npm run upload",
     "update-version": "powershell -NoProfile -command \"& {irm http://utilityapi/appversions -Method Post -ContentType 'application/json' -Body (@{app=$env:npm_package_name;version=$env:npm_package_version} | ConvertTo-Json)}\""
   },
