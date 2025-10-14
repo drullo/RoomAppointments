@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { InOutStatus } from '@model/in-out-status';
 
 @Pipe({
-  name: 'doorClosed'
+    name: 'doorClosed',
+    standalone: false
 })
 export class DoorClosedPipe implements PipeTransform {
 

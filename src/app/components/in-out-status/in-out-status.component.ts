@@ -6,9 +6,10 @@ import { InOutService } from '@services/in-out.service';
 import { Subscription, onErrorResumeNext, timer } from 'rxjs';
 
 @Component({
-  selector: 'cp-in-out-status',
-  templateUrl: './in-out-status.component.html',
-  styleUrls: ['./in-out-status.component.css']
+    selector: 'cp-in-out-status',
+    templateUrl: './in-out-status.component.html',
+    styleUrls: ['./in-out-status.component.css'],
+    standalone: false
 })
 export class InOutStatusComponent implements OnInit, OnDestroy {
   private inOutService = inject(InOutService);

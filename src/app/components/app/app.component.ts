@@ -3,15 +3,18 @@ import { environment } from '@environment/environment';
 import { AppointmentQuery } from '@model/appointment-query';
 import { DoorStatus } from '@model/door-status';
 import { InOutStatus } from '@model/in-out-status';
+import { CalendarService } from '@services/calendar.service';
 import { VersionService } from '@services/version.service';
 
 @Component({
-  selector: 'cp-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'cp-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
-  private versionService = inject(VersionService);
+  #versionService = inject(VersionService);
+  #calendarService = inject(CalendarService);
 
   //#region Fields
   query: AppointmentQuery;
@@ -23,12 +26,14 @@ export class AppComponent implements OnInit {
   error: any;
   errorType: string;
   errorTime: Date;
-  private doorError: any;
-  private inOutError: any;
+  #doorError: any;
+  #inOutError: any;
   //#endregion
 
   ngOnInit(): void {
-    this.versionService.checkVersion();
+    // Need MS Graph secret before things can proceed
+    this.#calendarService.gotMSGraphSecret
+      .subscribe(() => this.#versionService.checkVersion());
   }
   
   //#region Utilities
@@ -60,9 +65,9 @@ export class AppComponent implements OnInit {
   }
 
   gotDoorError(error: any): void {
-    this.doorError = error ? error.error : null; // If null, it will clear a previous error
+    this.#doorError = error ? error.error : null; // If null, it will clear a previous error
 
-    if (this.inOutError) {
+    if (this.#inOutError) {
       return; // So we don't step on it
     }
 
@@ -73,9 +78,9 @@ export class AppComponent implements OnInit {
   }
 
   gotInOutError(error: any): void {
-    this.inOutError = error ? error.error : null; // If null, it will clear a previous error
+    this.#inOutError = error ? error.error : null; // If null, it will clear a previous error
 
-    if (this.doorError) {
+    if (this.#doorError) {
       return; // So we don't step on it
     }
 

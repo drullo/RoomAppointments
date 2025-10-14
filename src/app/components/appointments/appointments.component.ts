@@ -14,9 +14,10 @@ import { DateTime } from 'luxon';
 import { Subscription, forkJoin, onErrorResumeNext, timer } from 'rxjs';
 
 @Component({
-  selector: 'cp-appointments',
-  templateUrl: './appointments.component.html',
-  styleUrls: ['./appointments.component.css']
+    selector: 'cp-appointments',
+    templateUrl: './appointments.component.html',
+    styleUrls: ['./appointments.component.css'],
+    standalone: false
 })
 export class AppointmentsComponent implements OnDestroy, OnChanges {
   //#region Services

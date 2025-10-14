@@ -7,9 +7,10 @@ import { config } from '@environment/config';
 //#endregion
 
 @Component({
-  selector: 'cp-footer',
-  templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.css']
+    selector: 'cp-footer',
+    templateUrl: './footer.component.html',
+    styleUrls: ['./footer.component.css'],
+    standalone: false
 })
 export class FooterComponent implements OnInit, OnDestroy {
   //#region Fields

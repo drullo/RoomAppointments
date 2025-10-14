@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'errorDetails'
+    name: 'errorDetails',
+    standalone: false
 })
 export class ErrorDetailsPipe implements PipeTransform {
 

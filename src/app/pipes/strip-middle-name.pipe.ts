@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'stripMiddleName'
+    name: 'stripMiddleName',
+    standalone: false
 })
 export class StripMiddleNamePipe implements PipeTransform {
 

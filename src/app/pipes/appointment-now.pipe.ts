@@ -2,7 +2,8 @@ import { CalendarEvent } from '@cleavelandprice/ngx-lib/msgraph';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'appointmentNow'
+    name: 'appointmentNow',
+    standalone: false
 })
 export class AppointmentNowPipe implements PipeTransform {
 

@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 // Material
 import { MatButtonModule } from '@angular/material/button';
@@ -37,8 +37,7 @@ import { RoomSelectorComponent } from '@components/room-selector/room-selector.c
 import { LimitSubjectLengthPipe } from './pipes/limit-subject-length.pipe';
 //#endregion
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         // Pipes
         AppointmentNowPipe,
         DoorClosedPipe,
@@ -55,10 +54,8 @@ import { LimitSubjectLengthPipe } from './pipes/limit-subject-length.pipe';
         RoomSelectorComponent,
         LimitSubjectLengthPipe
     ],
-    imports: [
-        BrowserModule,
+    bootstrap: [AppComponent], imports: [BrowserModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         FormsModule,
         MatButtonModule,
         MatCheckboxModule,
@@ -68,10 +65,6 @@ import { LimitSubjectLengthPipe } from './pipes/limit-subject-length.pipe';
         MatLuxonDateModule,
         MatProgressSpinnerModule,
         MatSelectModule,
-
         ActiveDirectoryModule,
-        SharePointModule
-    ],
-    bootstrap: [AppComponent]
-})
+        SharePointModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

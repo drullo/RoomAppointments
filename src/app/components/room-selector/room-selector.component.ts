@@ -10,9 +10,10 @@ import { DateTime } from 'luxon';
 import { interval } from 'rxjs';
 
 @Component({
-  selector: 'cp-room-selector',
-  templateUrl: './room-selector.component.html',
-  styleUrls: ['./room-selector.component.css']
+    selector: 'cp-room-selector',
+    templateUrl: './room-selector.component.html',
+    styleUrls: ['./room-selector.component.css'],
+    standalone: false
 })
 export class RoomSelectorComponent implements OnInit {
   public dialog = inject(MatDialog);

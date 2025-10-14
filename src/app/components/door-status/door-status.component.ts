@@ -6,9 +6,10 @@ import { ErrorHandlerService } from '@services/error-handler.service';
 import { Subscription, onErrorResumeNext, timer } from 'rxjs';
 
 @Component({
-  selector: 'cp-door-status',
-  templateUrl: './door-status.component.html',
-  styleUrls: ['./door-status.component.css']
+    selector: 'cp-door-status',
+    templateUrl: './door-status.component.html',
+    styleUrls: ['./door-status.component.css'],
+    standalone: false
 })
 export class DoorStatusComponent implements OnInit, OnDestroy {
   private doorService = inject(DoorStatusService);

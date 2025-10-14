@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DirectoryEntry } from '@model/directory-entry';
 
 @Pipe({
-  name: 'roomIsPerson'
+    name: 'roomIsPerson',
+    standalone: false
 })
 export class RoomIsPersonPipe implements PipeTransform {
   // The app now allows certain users (managers) to be treated as conference rooms

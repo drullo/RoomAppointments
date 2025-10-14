@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'limitSubjectLength'
+    name: 'limitSubjectLength',
+    standalone: false
 })
 export class LimitSubjectLengthPipe implements PipeTransform {
 
