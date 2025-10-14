@@ -3,7 +3,7 @@ import { environment } from '@environment/environment';
 import { AppointmentQuery } from '@model/appointment-query';
 import { DoorStatus } from '@model/door-status';
 import { InOutStatus } from '@model/in-out-status';
-import { CalendarService } from '@services/calendar.service';
+import { MsgraphService } from '@services/msgraph.service';
 import { VersionService } from '@services/version.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { VersionService } from '@services/version.service';
 })
 export class AppComponent implements OnInit {
   #versionService = inject(VersionService);
-  #calendarService = inject(CalendarService);
+  #msGraphService = inject(MsgraphService);
 
   //#region Fields
   query: AppointmentQuery;
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // Need MS Graph secret before things can proceed
-    this.#calendarService.gotMSGraphSecret
+    this.#msGraphService.gotSecret
       .subscribe(() => this.#versionService.checkVersion());
   }
   

@@ -1,6 +1,9 @@
 export const config = {
   utilityApiUrl: 'http://utilityapi',
-  utilityApiUser: 'MS Graph - Utility API',
+  msGraph: {
+      utilityApiUser: 'MS Graph - Utility API',
+      secretRefreshHours: 6
+  },
   emailConfig: {
     sender: {
       displayName: 'Conference Room Availability App'
