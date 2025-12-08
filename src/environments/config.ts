@@ -1,5 +1,5 @@
 export const config = {
-  utilityApiUrl: 'http://utilityapi',
+  utilityApiUrl: 'https://utilityapi.cleavelandprice.com',
   msGraph: {
       utilityApiUser: 'MS Graph - Utility API',
       secretRefreshHours: 6
