@@ -6,12 +6,12 @@
       <div class="block appointment now non-appointment-message">
         {{ errorType }} Error {{ error.status }}: {{ error.statusText }}
         <div class="note">
-          @if (errorType === 'Appointments') {
+          <!--@if (errorType === 'Appointments') {
             <span>
               You may have forgotten to enter a password if it's required for the selected room/person.
               <br />Or you may have entered an incorrect password.
             </span>
-          }
+          }-->
           <div class="error-details">
             {{ error.message }}
             <div>

@@ -59,6 +59,12 @@ export class AppointmentsComponent implements OnDestroy, OnChanges {
   }
   //#endregion
 
+  //#region Retry on error
+  #retryCount = 0;
+  #maxRetries = 10;
+  #retryWaitMS = 3000;
+  //#endregion
+
   //#region Lifecycle
   ngOnDestroy(): void {
     if (this.refreshSubscription) {
@@ -78,6 +84,7 @@ export class AppointmentsComponent implements OnDestroy, OnChanges {
 
     // Re-initialize
     this.error = null;
+    this.#retryCount = 0;
 
     forkJoin([
       //this.employeeService.get(),
@@ -114,6 +121,18 @@ export class AppointmentsComponent implements OnDestroy, OnChanges {
         this.errorType = 'Appointments';
         this.appointments = null;
         this.errorHandler.sendError('Appointments', this.query.userName, err);
+
+        // Retry
+        timer(this.#retryWaitMS)
+          .subscribe.bind(this)(() => {
+            if (this.#retryCount < this.#maxRetries) {
+              console.log(`Retry count ${this.#retryCount} of ${this.#maxRetries}...`);
+              this.#retryCount++;
+              this.getData();
+            } else {
+              console.log('Max retries exceeded');
+            }
+          });
       }
     });
   }
