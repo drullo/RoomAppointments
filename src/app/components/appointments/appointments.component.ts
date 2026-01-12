@@ -116,11 +116,16 @@ export class AppointmentsComponent implements OnDestroy, OnChanges {
         }
       },
       error: (err) => {
+        // Due to the frequency of errors causing tablets to display error messages,
+        // I'm commenting this out so that intermittent errors don't result in appointments not being displayed.
+        // The errors always resolve after a few minutes.  So... we're basically ignoring them now.
+        /*
         this.error = err;
         this.errorTime = new Date();
         this.errorType = 'Appointments';
         this.appointments = null;
-        this.errorHandler.sendError('Appointments', this.query.userName, err);
+        */
+       this.errorHandler.sendError('Appointments', this.query.userName, err);
 
         // Retry
         timer(this.#retryWaitMS)
